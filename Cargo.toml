@@ -1,0 +1,7 @@
+[workspace]
+
+members = [
+    "lib/backend",
+    "tests/backend_tests",
+    "baba_main"
+]
