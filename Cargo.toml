@@ -1,7 +1,5 @@
 [workspace]
 
-members = [
-    "lib/backend",
-    "tests/backend_tests",
-    "baba_main"
-]
+members = ["lib/backend", "tests/backend_tests", "baba_main"]
+# This is needed for Bevy to compile currently, more reading: https://doc.rust-lang.org/cargo/reference/resolver.html#resolver-versions
+resolver = "2"
