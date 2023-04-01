@@ -1,5 +1,7 @@
+use bevy::prelude::*;
 use super::grid_configuration::GridConfiguration;
 
+#[derive(Resource)]
 pub struct Grid {
     pub configuration: GridConfiguration,
 }
