@@ -1,6 +1,8 @@
 use crate::data_structures::grid_configuration::GridConfiguration;
 use crate::data_structures::enums::node::Node;
+use serde::{Serialize, Deserialize};
 
+#[derive(Serialize, Deserialize)]
 pub struct LevelData{
     pub grid: GridConfiguration,
     pub nodes: Vec<Node>,

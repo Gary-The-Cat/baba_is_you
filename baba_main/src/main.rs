@@ -1,3 +1,4 @@
+mod application;
 mod ecs;
 mod data_structures;
 use bevy::prelude::*;
@@ -7,15 +8,27 @@ use bevy::window::PrimaryWindow;
 use ecs::systems::index_debugger;
 use ecs::systems::index_position_updater;
 
+// Testing
+use data_structures::enums::node::Node;
+use data_structures::enums::nodes::object::Object;
+
 fn main() {
 
-    let grid = Grid {
+    // Enum serialization test
+    let node: Node = Node::Object(Object::Baba);
+    let serialized = serde_json::to_string(&node).unwrap();
+    let deserialized: Node = serde_json::from_str(&serialized).unwrap();
+
+    // Temporary hack, needed because the systems will start straight away before a level has been loaded and the grid resource
+    // is needed by the update system.
+    let grid = Grid{
         configuration: GridConfiguration{
             index_size_x: 20,
             index_size_y: 20,
             cell_size_x: 20.0,
             cell_size_y: 20.0,
         },
+        centre: (0.0, 0.0),
     };
 
     App::new()
@@ -23,9 +36,9 @@ fn main() {
     .insert_resource(grid)
     .add_startup_system(setup)
     .add_startup_system(setup_camera)
+    .add_system(set_grid)
     .add_system(index_position_updater::update)
-    .add_system(index_debugger::index_debugger_print)
-    .run();
+    .add_system(index_debugger::index_debugger_print).run();
 }
 
 pub fn setup(
@@ -63,4 +76,38 @@ pub fn setup_camera(
         transform: Transform::from_xyz(x, y, 0.0),
         ..Default::default()
     });
+}
+
+pub fn set_grid(
+    mut commands : Commands,
+    window_query: Query<&Window, With<PrimaryWindow>>,
+    keyboard_input: Res<Input<KeyCode>>){
+
+    if keyboard_input.just_pressed(KeyCode::L){
+
+        let window = window_query.get_single().unwrap();
+        let x = window.width() / 2.0;
+        let y = window.height() / 2.0;
+
+        let configuration = GridConfiguration{
+            index_size_x: 20,
+            index_size_y: 20,
+            cell_size_x: 20.0,
+            cell_size_y: 20.0,
+        };
+
+        let grid = Grid{
+            configuration: configuration,
+            centre: (x, y),
+        };
+
+        // I think that this should be init? we would need to impl default for grid.
+        commands.insert_resource(grid);
+
+        let lines = application::file_system::read_lines("C:/dev/BabaLevels/level.csv".to_string());
+
+        let level_data = data_structures::level_data::LevelData::create_from_lines(lines);
+
+        println!("Someone pressed the L key.");
+    }
 }

@@ -1,3 +1,6 @@
+use serde::{Serialize, Deserialize};
+
+#[derive(Serialize, Deserialize)]
 pub struct GridConfiguration{
     pub index_size_x: u32,
     pub index_size_y: u32,

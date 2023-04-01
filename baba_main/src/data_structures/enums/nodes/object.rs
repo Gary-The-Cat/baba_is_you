@@ -1,8 +1,10 @@
 use serde::{Serialize, Deserialize};
 
 #[derive(Serialize, Deserialize)]
-pub enum Operator{
-    Is,
-    And,
-    Or,
+pub enum Object{
+    Baba,
+    Flag,
+    Rock,
+    Wall,
+    Key,
 }
