@@ -1,7 +1,7 @@
 use crate::data_structures::enums::nodes::*;
 use serde::{Serialize, Deserialize};
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy)]
 pub enum Node{
     Object(object::Object),
     Noun(noun::Noun),

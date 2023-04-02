@@ -40,6 +40,22 @@ impl Grid {
         return Some((lower_left.0 + x as f32 * self.configuration.cell_size_x, lower_left.1 + y as f32 * self.configuration.cell_size_y))
     }
     
+    pub fn cell_center_from_index(&self, (x, y): (u32, u32)) -> Option<(f32, f32)> {
+    
+        // The cell position is outside of the grid
+        if x > self.configuration.index_size_x || y > self.configuration.index_size_y {
+            return None
+        }
+
+        let lower_left = self.lower_left();
+        let x = lower_left.0 + x as f32 * self.configuration.cell_size_x;
+        let y = lower_left.1 + y as f32 * self.configuration.cell_size_y;
+        let half_cell_width = self.configuration.cell_size_x / 2.0;
+        let half_cell_height = self.configuration.cell_size_y / 2.0;
+    
+        return Some((x + half_cell_width, y + half_cell_height));
+    }
+    
     pub fn get_cell_from_position(&self, (x, y): (u32, u32)) -> Option<(u32, u32)> {
         let is_above_grid = x >= self.width() as u32 || y >= self.height() as u32;
 

@@ -1,0 +1,15 @@
+11,11
+1, 0, {"Operator":"On"}, Right
+3, 0, {"Operator":"Is"}, Right
+2, 0, {"Noun":"Rock"}, Right
+0, 0, {"Noun":"Wall"}, Right
+4, 0, {"Noun":"Flag"}, Right
+4, 5, {"Object":"Rock"}, Right
+5, 5, {"Object":"Wall"}, Right
+4, 10, {"Noun":"Wall"}, Right
+5, 10, {"Operator":"Is"}, Right
+6, 10, {"Property":"Push"}, Right
+7, 2, {"Noun":"Key"}, Right
+8, 2, {"Operator":"Is"}, Right
+9, 2, {"Property":"You"}, Right
+9, 5, {"Object":"Key"}, Right
