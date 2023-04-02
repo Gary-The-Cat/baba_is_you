@@ -1,11 +1,14 @@
 use crate::data_structures::grid_configuration::GridConfiguration;
+use crate::data_structures::node_visual::NodeVisual;
 use crate::data_structures::enums::node::Node;
 use serde::{Serialize, Deserialize};
+
+use super::enums::node;
 
 #[derive(Serialize, Deserialize)]
 pub struct LevelData{
     pub grid: GridConfiguration,
-    pub nodes: Vec<Node>,
+    pub nodes: Vec<NodeVisual>,
 }
 
 impl LevelData{
@@ -35,16 +38,31 @@ impl LevelData{
                         return Err(format!("An error occurred while reading line {line}, please ensure it is in the correct format and try again.").to_string());
                     }
 
-                    if let (Ok(x), Ok(y)) = (line_components[0].parse::<u32>(), line_components[1].parse::<u32>()){
+                    let x_string = line_components[0].trim().to_string();
+                    let y_string = line_components[1].trim().to_string();
+
+                    let x_result = x_string.parse::<u32>();
+                    let y_result = y_string.parse::<u32>();
+
+                    if let (Ok(x), Ok(y)) = (x_result, y_result){
                         if x >= config.0 || y >= config.1 {
                             return Err(format!("An error occurred while reading line {index}, please ensure your x and y are within the defined level grid size.").to_string());
                         }
+                        let node_string: String = line_components[2].to_string();
+                        let node_result: Result<Node, serde_json::Error> = serde_json::from_str(&node_string);
+                        if let Ok(node) = node_result{
+                            level.nodes.push(NodeVisual { index_position: (x, y), node: node });
+                        }
+                        else{
+                            return Err(format!("The node type {node_string}, is not recognised.").to_string());
+                        }
                     }
                     else {
+                        return Err(format!("The node type is not recognised.").to_string());
                     }
                 }
                 
-            return Err("Not sure".to_string());
+            return Ok(level);
             }
             else
             {

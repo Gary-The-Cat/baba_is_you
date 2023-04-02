@@ -1,5 +1,6 @@
 use std::fs::File;
 use std::io::{ self, BufRead, BufReader };
+use std::path::PathBuf;
 
 pub fn read_lines_as_buffer(filename: String) -> io::Lines<BufReader<File>> {
     // Open the file in read-only mode.
@@ -19,4 +20,17 @@ pub fn read_lines(filename: String) -> Vec<String> {
     } 
 
     return output;
+}
+
+pub fn get_project_root() -> String{
+    return PathBuf::from(env!("CARGO_MANIFEST_DIR")).display().to_string();
+}
+
+pub fn get_asset_path(asset_name: String) -> String{
+    let mut path = get_project_root();
+    path.push('\\');
+    path.push_str("assets");
+    path.push('\\');
+    path.push_str(asset_name.as_str());
+    return path;
 }
