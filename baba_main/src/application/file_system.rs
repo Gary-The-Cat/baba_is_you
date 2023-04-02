@@ -9,11 +9,11 @@ pub fn read_lines_as_buffer(filename: String) -> io::Lines<BufReader<File>> {
     return io::BufReader::new(file).lines(); 
 }
 
-pub fn read_lines(filename: String) -> Vec<String> {
+pub fn read_lines(file_path: String) -> Vec<String> {
     
     let mut output: Vec<String> = Vec::new();
 
-    let lines = read_lines_as_buffer(filename);
+    let lines = read_lines_as_buffer(file_path);
 
     for line in lines{
         output.push(line.unwrap());
@@ -32,5 +32,14 @@ pub fn get_asset_path(asset_name: String) -> String{
     path.push_str("assets");
     path.push('\\');
     path.push_str(asset_name.as_str());
+    return path;
+}
+
+pub fn get_level_path(level_name: String) -> String{
+    let mut path = get_project_root();
+    path.push('\\');
+    path.push_str("levels");
+    path.push('\\');
+    path.push_str(level_name.as_str());
     return path;
 }

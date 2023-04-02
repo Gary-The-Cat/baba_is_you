@@ -95,7 +95,8 @@ pub fn set_grid(
             commands.entity(entity).despawn();
         }
 
-        let lines = application::file_system::read_lines("C:/dev/BabaLevels/json/level_json.csv".to_string());
+        let level_path = application::file_system::get_level_path("melt.csv".to_string());
+        let lines = application::file_system::read_lines(level_path);
 
         let level_data_result = data_structures::level_data::LevelData::create_from_lines(lines);
 
