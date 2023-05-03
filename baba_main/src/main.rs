@@ -132,9 +132,9 @@ pub fn set_grid(
             // Give all text nodes non-transient push component
             match node_visual.node {
                 Node::Object(_) => {},
-                Node::Noun(_) => { entity_commands.insert(backend::ecs::components::push::Push{}); },
-                Node::Operator(_) => { entity_commands.insert(backend::ecs::components::push::Push{}); },
-                Node::Property(_) => { entity_commands.insert(backend::ecs::components::push::Push{}); },
+                Node::Noun(_) => { entity_commands.insert(backend::ecs::components::push::Push{ is_transient: false }); },
+                Node::Operator(_) => { entity_commands.insert(backend::ecs::components::push::Push{ is_transient: false }); },
+                Node::Property(_) => { entity_commands.insert(backend::ecs::components::push::Push{ is_transient: false }); },
             }
         }
         
