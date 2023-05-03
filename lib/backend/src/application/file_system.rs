@@ -1,4 +1,4 @@
-use std::fs::{File, self};
+use std::fs::File;
 use std::io::{ self, BufRead, BufReader };
 use std::path::PathBuf;
 

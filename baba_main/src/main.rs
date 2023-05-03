@@ -1,28 +1,18 @@
 mod application;
-mod ecs;
-mod data_structures;
-use std::path::PathBuf;
 
+use backend::data_structures::level_data::LevelData;
 use bevy::core_pipeline::clear_color::ClearColorConfig;
 use bevy::prelude::*;
-use data_structures::grid::Grid;
-use data_structures::grid_configuration::GridConfiguration;
+use backend::data_structures::grid::Grid;
+use backend::data_structures::grid_configuration::GridConfiguration;
+use backend::data_structures::enums::node::Node;
 use bevy::window::PrimaryWindow;
-use ecs::components::node_type::NodeType;
-use ecs::systems::index_debugger;
-use ecs::systems::index_position_updater;
-use ecs::components::position_index::PositionIndex;
-
-// Testing
-use data_structures::enums::node::Node;
-use data_structures::enums::nodes::object::Object;
+use backend::ecs::components::node_type::NodeType;
+use backend::ecs::systems::index_debugger;
+use backend::ecs::systems::index_position_updater;
+use backend::ecs::components::position_index::PositionIndex;
 
 fn main() {
-    // Enum serialization test
-    let node: Node = Node::Object(Object::Baba);
-    let serialized = serde_json::to_string(&node).unwrap();
-    let deserialized: Node = serde_json::from_str(&serialized).unwrap();
-
     // Temporary hack, needed because the systems will start straight away before a level has been loaded and the grid resource
     // is needed by the update system.
     let grid = Grid{
@@ -95,66 +85,60 @@ pub fn set_grid(
             commands.entity(entity).despawn();
         }
 
-        let level_path = application::file_system::get_level_path("melt.csv".to_string());
-        let lines = application::file_system::read_lines(level_path);
+        let level_path = application::file_system::get_level_path("basic.json".to_string());
+        let lines = std::fs::read_to_string(level_path).unwrap();
 
-        let level_data_result = data_structures::level_data::LevelData::create_from_lines(lines);
+        let level_data: LevelData = serde_json::from_str(&lines).unwrap();
 
-        match level_data_result {
-            Err(message) => println!("{}", message),
-            Ok(level_data) => {
-                
-                // Get the half window size to create the grid.
-                let window = window_query.get_single().unwrap();
-                let grid = Grid{
-                    configuration: level_data.grid,
-                    centre: (window.width() / 2.0, window.height() / 2.0),
-                };
-
-                // Spawn the grid background
-                commands.spawn(SpriteBundle {
-                    sprite: Sprite {
-                        color: Color::BLACK,
-                        custom_size: Some(Vec2::new(grid.width(), grid.height())),
-                        ..default()
-                    },
-                    transform: Transform::from_translation(Vec3::new(grid.centre.0, grid.centre.1, 0.)),
-                    ..default()
-                });
-    
-                // Create all node entities that are in the level.
-                for node_visual in level_data.nodes{
-    
-                    // Load asset for node:
-                    let asset_name = data_structures::enums::node_visual_map::node_to_visual(node_visual.node);
-                    let asset_path = application::file_system::get_asset_path(asset_name);
-                    let asset = asset_server.load(asset_path);
-    
-                    let grid_position = grid.cell_center_from_index(node_visual.index_position).unwrap();
-    
-                    let mut entity_commands = commands.spawn((
-                        ecs::components::position_index::PositionIndex{ x: node_visual.index_position.0, y: node_visual.index_position.1 },
-                        ecs::components::position::Position{ ..default() },
-                        ecs::components::node_type::NodeType{ node: node_visual.node },
-                        SpriteBundle{
-                            transform: Transform::from_xyz(grid_position.0, grid_position.1, 0.0),
-                            texture: asset,
-                            ..default()
-                        }
-                    ));
-    
-                    // Give all text nodes non-transient push component
-                    match node_visual.node {
-                        Node::Object(_) => {},
-                        Node::Noun(_) => { entity_commands.insert(ecs::components::push::Push{}); },
-                        Node::Operator(_) => { entity_commands.insert(ecs::components::push::Push{}); },
-                        Node::Property(_) => { entity_commands.insert(ecs::components::push::Push{}); },
-                    }
-                }
-                
-                // Overwrites the existing grid resource with the new one for this level.
-                commands.insert_resource(grid);
-            } 
+        // Get the half window size to create the grid.
+        let window = window_query.get_single().unwrap();
+        let grid = Grid{
+            configuration: level_data.grid,
+            centre: (window.width() / 2.0, window.height() / 2.0),
         };
+
+        // Spawn the grid background
+        commands.spawn(SpriteBundle {
+            sprite: Sprite {
+                color: Color::BLACK,
+                custom_size: Some(Vec2::new(grid.width(), grid.height())),
+                ..default()
+            },
+            transform: Transform::from_translation(Vec3::new(grid.centre.0, grid.centre.1, 0.)),
+            ..default()
+        });
+
+        // Create all node entities that are in the level.
+        for node_visual in level_data.nodes{
+
+            // Load asset for node:
+            let asset_name = backend::data_structures::enums::node_visual_map::node_to_visual(node_visual.node);
+            let asset_path = application::file_system::get_asset_path(asset_name);
+            let asset = asset_server.load(asset_path);
+
+            let grid_position = grid.cell_center_from_index(node_visual.index_position).unwrap();
+
+            let mut entity_commands = commands.spawn((
+                backend::ecs::components::position_index::PositionIndex{ x: node_visual.index_position.0, y: node_visual.index_position.1 },
+                backend::ecs::components::position::Position{ ..default() },
+                backend::ecs::components::node_type::NodeType{ node: node_visual.node },
+                SpriteBundle{
+                    transform: Transform::from_xyz(grid_position.0, grid_position.1, 0.0),
+                    texture: asset,
+                    ..default()
+                }
+            ));
+
+            // Give all text nodes non-transient push component
+            match node_visual.node {
+                Node::Object(_) => {},
+                Node::Noun(_) => { entity_commands.insert(backend::ecs::components::push::Push{}); },
+                Node::Operator(_) => { entity_commands.insert(backend::ecs::components::push::Push{}); },
+                Node::Property(_) => { entity_commands.insert(backend::ecs::components::push::Push{}); },
+            }
+        }
+        
+        // Overwrites the existing grid resource with the new one for this level.
+        commands.insert_resource(grid);
     }
 }

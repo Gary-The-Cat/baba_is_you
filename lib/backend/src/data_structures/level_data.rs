@@ -3,8 +3,6 @@ use crate::data_structures::node_visual::NodeVisual;
 use crate::data_structures::enums::node::Node;
 use serde::{Serialize, Deserialize};
 
-use super::enums::node;
-
 #[derive(Serialize, Deserialize)]
 pub struct LevelData{
     pub grid: GridConfiguration,
@@ -62,7 +60,7 @@ impl LevelData{
                     }
                 }
                 
-            return Ok(level);
+                return Ok(level);
             }
             else
             {
@@ -75,11 +73,11 @@ impl LevelData{
 fn try_get_width_height_from_line(configuration_line: &String) -> Result<(u32, u32), String> {
     let components: Vec<&str> = configuration_line.split(",").collect();
 
-    if (components.len() == 0)
+    if components.len() == 0
     {
         return Err("No configuration was was provided. Please check file structure and try again.".to_string());
     }
-    else if (components.len() != 2)
+    else if components.len() != 2
     {
         return Err("The configuration line must only consist of 'width,height'. Please check file structure and try again.".to_string());
     }

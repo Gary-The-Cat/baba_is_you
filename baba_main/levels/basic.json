@@ -1,0 +1,82 @@
+{
+  "grid": {
+    "index_size_x": 11,
+    "index_size_y": 5,
+    "cell_size_x": 64.0,
+    "cell_size_y": 64.0
+  },
+  "nodes": [
+    {
+      "index_position": [
+        0,
+        0
+      ],
+      "node": {
+        "Noun": "Baba"
+      }
+    },
+    {
+      "index_position": [
+        0,
+        1
+      ],
+      "node": {
+        "Operator": "Is"
+      }
+    },
+    {
+      "index_position": [
+        0,
+        2
+      ],
+      "node": {
+        "Property": "You"
+      }
+    },
+    {
+      "index_position": [
+        3,
+        3
+      ],
+      "node": {
+        "Object": "Baba"
+      }
+    },
+    {
+      "index_position": [
+        10,
+        0
+      ],
+      "node": {
+        "Noun": "Rock"
+      }
+    },
+    {
+      "index_position": [
+        10,
+        1
+      ],
+      "node": {
+        "Operator": "Is"
+      }
+    },
+    {
+      "index_position": [
+        10,
+        2
+      ],
+      "node": {
+        "Property": "Push"
+      }
+    },
+    {
+      "index_position": [
+        5,
+        3
+      ],
+      "node": {
+        "Object": "Rock"
+      }
+    }
+  ]
+}

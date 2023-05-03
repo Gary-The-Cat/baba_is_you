@@ -1,6 +1,5 @@
 use bevy::prelude::*;
 use crate::data_structures::grid::Grid;
-use crate::data_structures::grid_configuration::GridConfiguration;
 use crate::ecs::components::position::Position;
 use crate::ecs::components::position_index::PositionIndex;
 
