@@ -33,7 +33,9 @@ fn main() {
     .add_system(movement_test)
     .add_system(index_movement_test)
     .add_system(index_position_updater::update)
-    .add_system(index_debugger::index_debugger_print).run();
+    .add_system(index_debugger::index_debugger_print)
+    .add_system(backend::ecs::systems::phrase_parsing::RemoveAllTransientComponents)
+    .run();
 }
 
 pub fn setup_camera(
